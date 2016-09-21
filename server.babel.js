@@ -3,6 +3,7 @@ import express from 'express';
 import graphQLHTTP from 'express-graphql';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -31,6 +32,17 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 app.set('views', path.join(process.cwd(), 'views'));
 app.set('view engine', 'pug');
 
+function mongoConnect(){
+    return mongoose.connect("mongodb://172.17.0.2/payment1").connection;
+}
+
+mongoConnect()
+    .on('error',console.error.bind(console,"error: "))
+    .on('disconnected',mongoConnect)
+    .once('open',function(){
+        console.log("connection open");
+    });
+
 app.use('/graphql', graphQLHTTP({schema, pretty: true}));
 
 app.get('/graphiql', (req, res, next) => {
@@ -56,10 +68,13 @@ function renderHTML(req, res) {
   });
 }
 
+
+
 app.get('*', RubixAssetMiddleware('ltr'), (req, res, next) => {
   renderHTML(req, res);
 });
 
 app.listen(port, () => {
   console.log(`Node.js app is running at http://localhost:${port}/`);
+
 });
