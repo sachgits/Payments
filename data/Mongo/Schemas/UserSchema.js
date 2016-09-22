@@ -4,6 +4,14 @@
 import mongoose from "mongoose";
 let Schema = mongoose.Schema;
 
+import {
+Transact
+} from './CashTransferSchema';
+
+import {
+VerifiedMpesa
+} from './MpesaLoadSchema';
+
 const UserSchema = new Schema({
     username:{
         type: String,
@@ -28,9 +36,8 @@ const UserSchema = new Schema({
         type: Boolean,
         default: true
     },
-    cashRecieved:[{type:Schema.Types.ObjectId, ref:"Recieved"}],
-    cashTransfered:[{type:Schema.Types.ObjectId, ref:"Transfered"}],
-    mpesaLoads:[{type:Schema.Types.ObjectId, ref:'Mpesa'}]
+    cashTransaction:[{type:Schema.Types.ObjectId, ref:"Transaction"}],
+    mpesaLoads:[{type:Schema.Types.ObjectId, ref:'VerifiedMpesa'}]
 });
 
 const User =  mongoose.model('User', UserSchema);
@@ -58,14 +65,34 @@ module.exports.findUserById = (id) => {//TODO: populate to come later after mode
         });
     });
 };
-
+/*
+* return all users
+ */
+module.exports.findAllUsers = () => {//TODO: populate to come later after models have been added
+    return new Promise((resolve, reject) => {
+        User.find({}).populate('Transaction VerifiedMpesa').exec((err, res) => {
+            err ? reject(err) : resolve(res);
+        });
+    });
+};
 
 /*
 * pass it username and it will give you back the asked user
  */
 module.exports.findUserByUserName = (usernm) => {
     return new Promise((resolve, reject) => {//Todo: add populate
-        User.find({username:usernm}).exec((err, res) => {
+        User.find({username:usernm}).populate('Transaction VerifiedMpesa').exec((err, res) => {
+            err ? reject(err) : resolve(res);
+        });
+    });
+};
+
+/*
+ * pass it username and it will give you back the asked user
+ */
+module.exports.findUserByAccToken = (token) => {
+    return new Promise((resolve, reject) => {//Todo: add populate
+        User.find({accessToken:token}).populate('Transaction VerifiedMpesa').exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
