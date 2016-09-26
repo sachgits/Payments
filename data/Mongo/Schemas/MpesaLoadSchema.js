@@ -5,7 +5,8 @@ import mongoose from "mongoose";
 let Schema = mongoose.Schema;
 import {
     findUserById,
-    saveUser
+    saveUser,
+User
 } from './UserSchema';
 
 const VerifiedMpesaSchema = new Schema({
@@ -15,7 +16,8 @@ const VerifiedMpesaSchema = new Schema({
     },
 transactionID: {
         type:String,
-        required:true
+        required:true,
+    unique:true
     },
     phoneNumber:{
         type:String,
@@ -26,8 +28,8 @@ transactionID: {
         default:Date.now
     },
     verified:{
-        type:Boolean,
-        default:false
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 
@@ -67,22 +69,84 @@ module.exports.findVerifiedMpesaById = (id) => {//TODO: populate to come later a
  */
 module.exports.findAllVerifiedMpesas = () => {//TODO: populate to come later after models have been added
     return new Promise((resolve, reject) => {
-        VerifiedMpesa.find({}).exec((err, res) => {
+        VerifiedMpesa.find({}).populate('User').exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
 };
 
-/*
- *find all transactions
- */
-module.exports.verifyMpesa = (trans_id,phone_num) => {//TODO: populate to come later after models have been added
-    return new Promise((resolve, reject) => {
-        VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num}).exec((err, res) => {
-            err ? reject(err) : resolve(res);
-        });
+module.exports.verifyMpesa = (user_id,trans_id,phone_num)=>{
+    return findUserById(user_id).then((results)=>{
+        VerifiedMpesa.update({transactionID:trans_id,phoneNumber:phone_num},{$set:{verified:results._id}},
+            (err)=>{
+                if(!err){
+                    return VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num}).exec((errr,verifiedMpesa)=>{
+                        return new Promise((resolve,reject)=>{
+                            if(!err){
+                                console.log(verifiedMpesa);
+                                results.update({$push:{mpesaLoads:verifiedMpesa._id},$inc:{totalAmount:verifiedMpesa.amount}},
+                                    (err,loadedUser)=>{
+                                        if(!err){
+                                            console.log(loadedUser);
+                                            resolve(loadedUser);
+                                        }else{
+                                            console.log(err);
+                                            reject(err);
+                                        }
+                                    });
+                            }else{
+                                console.error(err);
+                                reject(err);
+                            }
+                        });
+                    });
+                }else{
+                    return new Promise((resolve,reject)=>{
+                        reject(err);
+                    });
+                }
+            }
+        );
+    },(errs)=>{
+        console.log(errs);
     });
 };
+
+/*
+*verify a mpesa transaction
+* @user_id: id of user trying to verify
+* @trans_id: supplied transaction ID from user_id user
+* @phone_num: phone number used to transact
+ */
+/*
+module.exports.verifyMpesa = (user_id,trans_id,phone_num) => {
+    return findUserById(user_id).then((results1)=> {
+        return VerifiedMpesa.findOne({transactionID: trans_id, phoneNumber: phone_num}).//TODO not sure where to use undefine or null
+            update({
+                $set: {verified: results1._id}
+            }).exec((err, res)=> {
+                if (!err) {
+                    return new Promise((resolve, reject)=> {
+                        results1.update({$push: {mpesaLoads: res._id}})
+                            .update({$inc:{totalAmount: res.amount}}).exec((err, res)=> {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(res);
+                            }
+                        });
+                    });
+                }else{
+                    return new Promise((resolve,reject)=>{
+                        console.log(err);
+                        reject(err);
+                    });
+                }
+            });
+    });
+};
+*/
+
 /*
  * link Mpesa to user
  * //like the create function

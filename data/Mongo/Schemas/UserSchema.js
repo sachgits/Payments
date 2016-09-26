@@ -60,7 +60,7 @@ module.exports.saveUser = (user) => {
  */
 module.exports.findUserById = (id) => {//TODO: populate to come later after models have been added
     return new Promise((resolve, reject) => {
-        User.find({_id:id}).exec((err, res) => {
+        User.findOne({_id:id}).exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });

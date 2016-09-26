@@ -49,16 +49,16 @@ describe('hooks', ()=>{
     });
 
     describe("#UserSchema", ()=>{
-        let sachgits = new User({username:"alanmaina",avatar:"http://fb.me/pish.maina/default.jpg",accessToken:"vJyuAG+_-=?by",
-        totalAmount:200000,});
-        /*it("it should save one user", function(){
+        let sachgits = new User({username:"sachgits",avatar:"http://fb.me/sachgits/pic1.jpg",accessToken:"BJ0a!Tjb+=?by",
+        totalAmount:500,});
+        it("it should save one user", function(){
             saveUser(sachgits).then(function(result){
-                expect(result).to.have.keys('username','avatar','_id');
+                expect(result).to.have.keys('usernam','avatar','_id');
             },
             function(err){
                 done(err);
             });
-        });*/
+        });
 
         it("should find one of the saved user using username", function(){
             findUserByUserName("sachgits").then(function(result){
@@ -75,6 +75,7 @@ describe('hooks', ()=>{
             //57e2a213b5c2dd4df9335b55 edithwangeci
             //57e2a27be687ce4e2002fb3a alanmaina
             findUserById("57e1d8582be5ae309086ce30").then(function(result){
+                console.log(result);
                     assert.equal(result.username,'blueduxx', "username match");
                 },
                 function (err) {
@@ -83,6 +84,7 @@ describe('hooks', ()=>{
         });
         it("find all users", function(){
             findAllUsers().then(function(results){
+                console.log(results);
                 assert.equal(result.length, 2, "were the results equal");
             },
             function(err){
@@ -92,8 +94,8 @@ describe('hooks', ()=>{
     });
 
     describe("Transaction operations", function(){
-        let trans = new Transact({from:"57e2a27be687ce4e2002fb3a",to:"57e2a213b5c2dd4df9335b55",
-            purchase:"Wiflix Daily",amount:50});
+        let trans = new Transact({sender:"57e768cb74c0772f41cf551d",reciever:"57e76a3686aade2f838c8f7e",
+            purchase:"Wiflix Daily",amount:10000});
         it("save transaction", function () {
             saveTransaction(trans).then(function(results){
                 assert.equal(results,1,"Not equal on purpose");
@@ -105,14 +107,14 @@ describe('hooks', ()=>{
 
     describe("find Transaction by id", function () {
         //57e1d25328e4de2f052e2e9b
-        it("finds all transaction with the id 57e26b5da7d0f6424d3974d9",function () {
+        /*it("finds all transaction with the id 57e26b5da7d0f6424d3974d9",function () {
             findTransactionById("57e26b5da7d0f6424d3974d9").then(function(results){
                 assert.equal(results,1,"not equal");
             },function(err){
                 done(err);
             });
-        });
-        
+        });*/
+
         it("return all transactions", function () {
             findAllTransactions().then(function(results){
                 expect(results).to.be.empty;
@@ -123,11 +125,12 @@ describe('hooks', ()=>{
     });
 
     describe("Mpesa operations", function(){
-        it("links mpesa to user", function() {
+        /*it("links mpesa to user", function() {
             let mpesa = new VerifiedMpesa({
-                amount: 500,
-                transactionID: 'JK10BYU8TY90',
-                phoneNumber: '0722222222'
+                amount: 1000,
+                transactionID: 'YZR2X6IOGG',
+                phoneNumber: '0722332233',
+                verified:null
             });
 
             linkMpesaToUser(mpesa).then(function (results) {
@@ -138,26 +141,29 @@ describe('hooks', ()=>{
             });
         });
 
-        it("return all transactions", function () {
+        /*it("return all transactions", function () {
             findAllVerifiedMpesas().then(function(results){
-                expect(results).to.be.empty;
-            },function(err){
-                done(err);
-            });
-        });
-
-        it("verify Mpesa", function () {
-            verifyMpesa("KRT20JPX123","0721169392").then(function(results){
                 console.log(results);
                 expect(results).to.be.empty;
             },function(err){
                 done(err);
             });
-        });
+        });*/
+
+        /*it("verify Mpesa", function () {//N6M7QR
+            verifyMpesa("57e76a3686aade2f838c8f7e","YZR3X6IOGG","0722332233").then(function(results){
+                console.log(results);
+                expect(results).to.be.empty;
+            },function(err){
+                console.log(err);
+                done(err);
+            });
+        }); */
     });
 
     after(function(){
         //runs after all tests in this block
+        //mongoose.connection.db.dropDatabase();
         mongoose.disconnect();
     });
 });
