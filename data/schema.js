@@ -49,6 +49,7 @@ import {
     transactionTypeFunc
 }from '../data/GraphQL/Types/TransactionType';
 import {addPurchaseMutation} from "../data/GraphQL/Mutations/PurchaseMutation";
+import {addMpesaMutation} from "../data/GraphQL/Mutations/MpesaClaimMutation";
 
 /* Query Type */
 const queryType = new GraphQLObjectType({
@@ -88,15 +89,16 @@ const queryType = new GraphQLObjectType({
 const mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
-        addTodo: addPurchaseMutation("purchaseMutation",transactEdge),
-        /*updateTodo: UpdateTodoMutation,
-        removeTodo: RemoveTodoMutation,*/
+        addPurchase: addPurchaseMutation("purchaseMutation",transactEdge),
+        claimMpesa: addMpesaMutation("mpesaMutation",mpesaEdge),
+        /*removeTodo: RemoveTodoMutation,*/
     }),
 });
 
 
 const {
-    connectionType: mpesaConnection
+    connectionType: mpesaConnection,
+    edgeType: mpesaEdge
 } = connectionDefinitions({
     name: 'transactionMpesa',
     nodeType: mpesaTypeFunc(nodeInterface,"transactionMpesa")

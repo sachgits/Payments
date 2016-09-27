@@ -8,6 +8,12 @@ import {
 findUserByAccToken,
 findUserById
 } from "../data/Mongo/Schemas/UserSchema";
+import {
+verifyMpesa,
+VerifiedMpesa,
+findVerifiedMpesaById,
+findAllVerifiedMpesas
+} from "../data/Mongo/Schemas/MpesaLoadSchema";
 
 export function saveTransact(sender_id,reciever_id,purchase,amount) {
 
@@ -21,4 +27,10 @@ export function saveTransact(sender_id,reciever_id,purchase,amount) {
 
 export function getUser(user_id){
     return findUserById(user_id);
+}
+
+export function verifyMpesaTransaction(user_id,transaction_code,phone_number){
+    let mpesa = new VerifiedMpesa({transactionID:transaction_code,phoneNumber:phone_number,amount:500,verified:user_id});
+    verifyMpesa(user_id,transaction_code,phone_number);
+    return mpesa;
 }

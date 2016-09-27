@@ -28,7 +28,7 @@ verifyMpesa,
 linkMpesaToUser,
 VerifiedMpesa
 } from '../data/Mongo/Schemas/MpesaLoadSchema';
-
+import {verifyMpesaTransaction} from '../data/database';
 describe('hooks', ()=>{
     before(function(){
         //runs before each test in this block
@@ -126,10 +126,10 @@ describe('hooks', ()=>{
     });
 
     describe("Mpesa operations", function(){
-        /*it("links mpesa to user", function() {
+        it("links mpesa to user", function() {
             let mpesa = new VerifiedMpesa({
                 amount: 1000,
-                transactionID: 'YZS1X6IOGG',
+                transactionID: 'YZS1X7IOGG',
                 phoneNumber: '0722332233',
                 verified:null
             });
@@ -140,7 +140,7 @@ describe('hooks', ()=>{
             }, function (err) {
                 console.log(err);
             });
-        }); */
+        });
 
         it("return all transactions", function () {
             //some ids
@@ -153,11 +153,11 @@ describe('hooks', ()=>{
             });
         });
 
-        it("verify Mpesa", function () {//N6M7QR
+        /*it("verify Mpesa", function () {//N6M7QR
             /*
             *some id's
             * 57e9236d914aa52d99ec8ebc rose.gitonga
-             */
+             *
             verifyMpesa("57e9236d914aa52d99ec8ebc","TUG5X6IOGG","0722332233").then(function(results){
                 console.log(results);
                 expect(results).to.be.empty;
@@ -165,7 +165,19 @@ describe('hooks', ()=>{
                 console.log(err);
                 done(err);
             });
+        });*/
+
+        it("#verifyMpesaTransaction", function(){
+            verifyMpesaTransaction("57e9236d914aa52d99ec8ebc","YZS1X7IOGG","0722332233").then((results)=>{
+                console.log("results from verifyMpesaTransaction:");
+                console.log(results);
+                assert.equal(1,1,"all equal");
+            },(err)=>{
+                console.error(err);
+            })
+
         });
+
     });
 
     after(function(){

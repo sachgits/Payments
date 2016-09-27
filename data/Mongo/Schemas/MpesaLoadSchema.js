@@ -74,19 +74,25 @@ module.exports.findAllVerifiedMpesas = () => {//TODO: populate to come later aft
         });
     });
 };
-
+/*
+ *verify a mpesa transaction
+ * @user_id: id of user trying to verify
+ * @trans_id: supplied transaction ID from user_id user
+ * @phone_num: phone number used to transact
+ */
 module.exports.verifyMpesa = (user_id,trans_id,phone_num)=>{
     return findUserById(user_id).then((results)=>{
         VerifiedMpesa.update({transactionID:trans_id,phoneNumber:phone_num},{$set:{verified:results._id}},
             (err)=>{
                 if(!err){
-                    return VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num,verified:null}).exec((errr,verifiedMpesa)=>{
+                    return VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num}).exec((errr,verifiedMpesa)=>{
                         return new Promise((resolve,reject)=>{
                             if(!err){
                                 results.update({$push:{mpesaLoads:verifiedMpesa._id},$inc:{totalAmount:verifiedMpesa.amount}},
                                     (err,loadedUser)=>{
                                         if(!err){
-                                            resolve(loadedUser);
+                                            console.log("about  log verify Mpesa: " + verifiedMpesa);
+                                            resolve(verifiedMpesa);
                                         }else{
                                             reject(err);
                                         }
@@ -107,41 +113,6 @@ module.exports.verifyMpesa = (user_id,trans_id,phone_num)=>{
         console.log(errs);
     });
 };
-
-/*
-*verify a mpesa transaction
-* @user_id: id of user trying to verify
-* @trans_id: supplied transaction ID from user_id user
-* @phone_num: phone number used to transact
- */
-/*
-module.exports.verifyMpesa = (user_id,trans_id,phone_num) => {
-    return findUserById(user_id).then((results1)=> {
-        return VerifiedMpesa.findOne({transactionID: trans_id, phoneNumber: phone_num}).//TODO not sure where to use undefine or null
-            update({
-                $set: {verified: results1._id}
-            }).exec((err, res)=> {
-                if (!err) {
-                    return new Promise((resolve, reject)=> {
-                        results1.update({$push: {mpesaLoads: res._id}})
-                            .update({$inc:{totalAmount: res.amount}}).exec((err, res)=> {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(res);
-                            }
-                        });
-                    });
-                }else{
-                    return new Promise((resolve,reject)=>{
-                        console.log(err);
-                        reject(err);
-                    });
-                }
-            });
-    });
-};
-*/
 
 /*
  * link Mpesa to user
