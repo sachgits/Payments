@@ -89,7 +89,7 @@ module.exports.Transact = Transact;
  */
 module.exports.findTransactionById = (id) => {//TODO: populate to come later after models have been added
     return new Promise((resolve, reject) => {
-        Transact.find({_id:id}).exec((err, res) => {
+        Transact.findOne({_id:id}).exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });

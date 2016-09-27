@@ -49,8 +49,8 @@ describe('hooks', ()=>{
     });
 
     describe("#UserSchema", ()=>{
-        let sachgits = new User({username:"sachgits",avatar:"http://fb.me/sachgits/pic1.jpg",accessToken:"BJ0a!Tjb+=?by",
-        totalAmount:500,});
+        let sachgits = new User({username:"rose.gitonga",avatar:"http://fb.me/gitongaroce/pic1.jpg",accessToken:"XXJ76etyb__++y",
+        totalAmount:50,});
         it("it should save one user", function(){
             saveUser(sachgits).then(function(result){
                 expect(result).to.have.keys('usernam','avatar','_id');
@@ -61,8 +61,8 @@ describe('hooks', ()=>{
         });
 
         it("should find one of the saved user using username", function(){
-            findUserByUserName("sachgits").then(function(result){
-                assert.equal(result.username, 'blueduxx', "username should not match");
+            findUserByUserName("rose.gitonga").then(function(result){
+                assert.equal(result.username, 'rose.gitonga', "username should not match");
             },
             function (err) {
                 done(err);
@@ -116,6 +116,7 @@ describe('hooks', ()=>{
         });*/
 
         it("return all transactions", function () {
+            //57e8f6a9d6840d1e2a5e4e36
             findAllTransactions().then(function(results){
                 expect(results).to.be.empty;
             },function(err){
@@ -128,7 +129,7 @@ describe('hooks', ()=>{
         /*it("links mpesa to user", function() {
             let mpesa = new VerifiedMpesa({
                 amount: 1000,
-                transactionID: 'YZR2X6IOGG',
+                transactionID: 'YZS1X6IOGG',
                 phoneNumber: '0722332233',
                 verified:null
             });
@@ -139,26 +140,32 @@ describe('hooks', ()=>{
             }, function (err) {
                 console.log(err);
             });
-        });
+        }); */
 
-        /*it("return all transactions", function () {
+        it("return all transactions", function () {
+            //some ids
+            //57e923cee9adfc2dc0d1ae92
             findAllVerifiedMpesas().then(function(results){
                 console.log(results);
                 expect(results).to.be.empty;
             },function(err){
                 done(err);
             });
-        });*/
+        });
 
-        /*it("verify Mpesa", function () {//N6M7QR
-            verifyMpesa("57e76a3686aade2f838c8f7e","YZR3X6IOGG","0722332233").then(function(results){
+        it("verify Mpesa", function () {//N6M7QR
+            /*
+            *some id's
+            * 57e9236d914aa52d99ec8ebc rose.gitonga
+             */
+            verifyMpesa("57e9236d914aa52d99ec8ebc","TUG5X6IOGG","0722332233").then(function(results){
                 console.log(results);
                 expect(results).to.be.empty;
             },function(err){
                 console.log(err);
                 done(err);
             });
-        }); */
+        });
     });
 
     after(function(){

@@ -1,0 +1,44 @@
+{
+  user(username:"benkagurani"){
+  id,
+  username,
+  totalAamount,
+  avatar,
+  accessToken
+},
+mpesaTransactions(first:1){
+pageInfo{
+hasNextPage
+}
+edges{
+cursor,
+node{
+id,
+transactionID,
+mobileNumber,
+amount
+verified
+}
+}
+},
+transactions(last:2){
+edges{
+cursor,
+node{
+id,
+timeStamp,
+purchase,
+amount
+}
+}
+},
+allUsers(first:1,after:"YXJyYXljb25uZWN0aW9uOjA="){
+edges{
+cursor,
+node{
+username,
+totalAamount
+}
+}
+}
+}

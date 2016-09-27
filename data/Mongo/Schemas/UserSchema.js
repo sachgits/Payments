@@ -81,7 +81,7 @@ module.exports.findAllUsers = () => {//TODO: populate to come later after models
  */
 module.exports.findUserByUserName = (usernm) => {
     return new Promise((resolve, reject) => {//Todo: add populate
-        User.find({username:usernm}).populate('Transaction VerifiedMpesa').exec((err, res) => {
+        User.findOne({username:usernm}).populate('Transaction VerifiedMpesa').exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });

@@ -59,7 +59,7 @@ module.exports.VerifiedMpesa = VerifiedMpesa;
  */
 module.exports.findVerifiedMpesaById = (id) => {//TODO: populate to come later after models have been added
     return new Promise((resolve, reject) => {
-        VerifiedMpesa.find({_id:id}).exec((err, res) => {
+        VerifiedMpesa.findOne({_id:id}).exec((err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -80,22 +80,18 @@ module.exports.verifyMpesa = (user_id,trans_id,phone_num)=>{
         VerifiedMpesa.update({transactionID:trans_id,phoneNumber:phone_num},{$set:{verified:results._id}},
             (err)=>{
                 if(!err){
-                    return VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num}).exec((errr,verifiedMpesa)=>{
+                    return VerifiedMpesa.findOne({transactionID:trans_id,phoneNumber:phone_num,verified:null}).exec((errr,verifiedMpesa)=>{
                         return new Promise((resolve,reject)=>{
                             if(!err){
-                                console.log(verifiedMpesa);
                                 results.update({$push:{mpesaLoads:verifiedMpesa._id},$inc:{totalAmount:verifiedMpesa.amount}},
                                     (err,loadedUser)=>{
                                         if(!err){
-                                            console.log(loadedUser);
                                             resolve(loadedUser);
                                         }else{
-                                            console.log(err);
                                             reject(err);
                                         }
                                     });
                             }else{
-                                console.error(err);
                                 reject(err);
                             }
                         });

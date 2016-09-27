@@ -38,7 +38,7 @@ function mongoConnect(){
 
 mongoConnect()
     .on('error',console.error.bind(console,"error: "))
-    .on('disconnected',mongoConnect)
+    .on('disconnected',console.log.bind(console,"disconnected"))
     .once('open',function(){
         console.log("connection open");
     });
